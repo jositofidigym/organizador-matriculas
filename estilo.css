@@ -77,7 +77,8 @@ section { padding: 56px 0; }
 .plan.destacado { border: 2px solid var(--acento); }
 .plan .cuanto { font: 700 2rem/1.1 "Segoe UI Variable Display", "Segoe UI", sans-serif; }
 .plan .cuanto small { font-size: .95rem; font-weight: 400; color: var(--suave); }
-.plan ul { padding-left: 18px; margin: 8px 0 0; color: var(--suave); font-size: .95rem; }
+.plan ul { padding-left: 18px; margin: 8px 0 16px; flex: 1; color: var(--suave); font-size: .95rem; }
+.plan .boton { justify-content: center; padding: 11px 16px; }
 
 /* preguntas */
 details { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 14px; padding: 16px 20px;
