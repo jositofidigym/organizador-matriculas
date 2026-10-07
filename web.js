@@ -1,4 +1,4 @@
-/* Peritolab — animaciones y detalles de la web. Sin librerías: todo el JavaScript es este. */
+/* PeritoLab — animaciones y detalles de la web. Sin librerías: todo el JavaScript es este. */
 (function () {
   "use strict";
   var quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
