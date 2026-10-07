@@ -152,6 +152,53 @@
     });
   });
 
+  // Menú del móvil: los enlaces de arriba no caben y se esconden; un botón los despliega.
+  var enlaces = nav && nav.querySelector(".nav-links");
+  if (enlaces) {
+    if (!enlaces.id) enlaces.id = "menu-principal";
+    var menu = document.createElement("button");
+    menu.type = "button";
+    menu.className = "nav-toggle";
+    menu.setAttribute("aria-controls", enlaces.id);
+    menu.setAttribute("aria-expanded", "false");
+    menu.setAttribute("aria-label", "Menú");
+    menu.innerHTML = "<span></span><span></span>";
+    nav.querySelector(".wrap").appendChild(menu);
+    var abrir = function (si) {
+      nav.classList.toggle("open", si);
+      menu.setAttribute("aria-expanded", si ? "true" : "false");
+    };
+    menu.addEventListener("click", function () { abrir(!nav.classList.contains("open")); });
+    enlaces.addEventListener("click", function (ev) { if (ev.target.closest("a")) abrir(false); });
+    document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") abrir(false); });
+  }
+
+  // Descargar desde el móvil: la aplicación es para Windows. En vez de bajar un .exe que el
+  // teléfono no puede abrir, se ofrece mandarse el enlace para abrirlo en el ordenador.
+  var movil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 900);
+  if (movil) {
+    var aviso = null;
+    var cerrarAviso = function () { if (aviso) { aviso.remove(); aviso = null; } };
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href$="-instalador.exe"]');
+      if (!a) return;
+      ev.preventDefault();
+      cerrarAviso();
+      var aqui = location.origin + location.pathname.replace(/[^/]*$/, "") + "matriculas.html";
+      aviso = document.createElement("div");
+      aviso.className = "toast";
+      aviso.setAttribute("role", "dialog");
+      aviso.setAttribute("aria-label", "Descargar en el ordenador");
+      aviso.innerHTML = '<p><b>PeritoLab Matrículas es para Windows.</b> Ábrela en tu ordenador para descargarla.</p>' +
+        '<div class="toast-actions"><a class="btn btn-primary btn-sm" href="mailto:?subject=' +
+        encodeURIComponent("PeritoLab Matrículas") + "&body=" + encodeURIComponent("Para descargarla en el ordenador: " + aqui) +
+        '">Enviármelo por correo</a><button type="button" class="btn btn-ghost btn-sm">Cerrar</button></div>';
+      document.body.appendChild(aviso);
+      aviso.querySelector("button").addEventListener("click", cerrarAviso);
+    });
+  }
+
   var anio = document.querySelector("[data-year-now]");
   if (anio) anio.textContent = String(new Date().getFullYear());
 })();
