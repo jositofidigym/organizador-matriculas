@@ -370,6 +370,7 @@ html:not(.js) .win-progress span { width: 100%; }
   .split.rev > :first-child { order: 0; }
   .product { grid-template-columns: 1fr; }
   .product-art { min-height: 340px; border-left: 0; border-top: 1px solid var(--line); }
+  .product-art .mini { left: 50%; top: 40px; width: min(600px, calc(100% - 48px)); transform: translateX(-50%); }
 }
 @media (max-width: 820px) {
   body { font-size: 16px; }
@@ -388,7 +389,7 @@ html:not(.js) .win-progress span { width: 100%; }
   .stage { margin-top: 60px; }
   .window { --tilt: 8deg; }
   .product-copy { padding: 34px 28px; }
-  .product-art .mini { left: 20px; right: 20px; top: 28px; width: auto; }
+  .product-art .mini { left: 20px; right: 20px; top: 28px; width: auto; transform: none; }
   .soon { padding: 28px; }
   .vault { padding: 56px 24px; border-radius: 22px; }
   .faq summary { font-size: 17px; }
