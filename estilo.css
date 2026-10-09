@@ -92,7 +92,7 @@ h1, h2, h3 { font-family: var(--display); margin: 0; font-weight: 600; letter-sp
 }
 .pill b { font-weight: 500; padding: 3px 10px; border-radius: 999px; background: rgba(143, 123, 255, .16); color: var(--accent-3); font-size: 12px; }
 a.pill:hover { box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); }
-.grad { background: linear-gradient(180deg, #fff 30%, #b9adff 120%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .1em; margin-bottom: -.1em; }
+.grad { background: linear-gradient(180deg, #fff 30%, #b9adff 120%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: .18em 0 .22em; margin-bottom: -.22em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.6; color: var(--muted); max-width: 40em; }
 .h-xl { font-size: clamp(44px, 7.4vw, 96px); letter-spacing: -.045em; line-height: .98; }
 .h-l { font-size: clamp(34px, 4.8vw, 60px); letter-spacing: -.04em; }
@@ -100,15 +100,19 @@ a.pill:hover { box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); }
 .center .lead { margin-inline: auto; }
 
 /* ---------- portada ---------- */
-.hero { position: relative; padding: 172px 0 96px; isolation: isolate; }
-.hero-copy { max-width: 920px; margin-inline: auto; text-align: center; }
+.hero { position: relative; padding: 0 0 96px; isolation: isolate; }
+.hero-copy { max-width: 920px; margin-inline: auto; text-align: center; min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 110px 0 72px; }
 .hero-copy .lead { margin: 26px auto 0; }
 .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 38px; }
 .hero-note { margin-top: 18px; font-size: 13.5px; color: var(--faint); }
 .hero .pill { margin-bottom: 30px; }
 
 /* ---------- ventana de la aplicación (maqueta) ---------- */
-.stage { position: relative; margin-top: 86px; perspective: 2200px; }
+.stage { position: relative; margin-top: 0; perspective: 2200px; }
+/* La ventana aparece al bajar: de borrosa y algo más abajo a nítida y en su sitio (web.js, --p de 0 a 1). */
+.js .hero .stage { --p: 0; opacity: var(--p); filter: blur(calc((1 - var(--p)) * 16px));
+  transform: translateY(calc((1 - var(--p)) * 70px)); will-change: opacity, filter, transform; }
 .window {
   --tilt: 14deg; position: relative; border-radius: 16px; overflow: hidden; background: #fafafd; color: #1e1b39;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 50px 120px -30px rgba(0, 0, 0, .9), 0 30px 60px -40px rgba(98, 70, 234, .8);
@@ -344,6 +348,15 @@ section { position: relative; }
 .tabla th { color: var(--text); font-weight: 600; background: rgba(255, 255, 255, .03); }
 .tabla td { color: var(--muted); }
 .tabla tr:last-child td { border-bottom: 0; }
+@media (max-width: 700px) {
+  .tabla { box-shadow: none; overflow: visible; }
+  .tabla table { min-width: 0; }
+  .tabla thead { display: none; }
+  .tabla tr { display: block; margin-bottom: 14px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); padding: 6px 0; }
+  .tabla td { display: block; border-bottom: 0; padding: 8px 16px; }
+  .tabla td::before { content: attr(data-label); display: block; font-size: 12px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: 2px; }
+}
 
 /* ---------- aparición al hacer scroll ---------- */
 .js .reveal { opacity: 0; transform: translateY(22px); filter: blur(6px); transition: opacity 1s var(--ease), transform 1s var(--ease), filter 1s var(--ease); transition-delay: var(--d, 0s); }
@@ -379,7 +392,8 @@ html:not(.js) .win-progress span { width: 100%; }
     margin: 0; padding: 8px 20px 18px; background: rgba(12, 11, 17, .98); border-bottom: 1px solid var(--line); font-size: 17px; }
   .nav.open .nav-links a { padding: 14px 4px; border-top: 1px solid var(--line); color: var(--text); }
   .brand small { display: none; }
-  .hero { padding: 132px 0 64px; }
+  .hero { padding: 0 0 64px; }
+  .hero-copy { padding: 96px 0 56px; }
   .block { padding: 104px 0; }
   .grid-3, .steps { grid-template-columns: 1fr; }
   .win-body { grid-template-columns: 1fr; min-height: 0; }
@@ -388,7 +402,7 @@ html:not(.js) .win-progress span { width: 100%; }
   .thumbs i:nth-child(n+3) { display: none; }
   .meta { display: none; }
   .row { grid-template-columns: auto 1fr auto; }
-  .stage { margin-top: 60px; }
+  .stage { margin-top: 0; }
   .window { --tilt: 8deg; }
   .product-copy { padding: 34px 28px; }
   .product-art .mini { left: 20px; right: 20px; top: 28px; width: auto; transform: none; }
@@ -416,6 +430,7 @@ html:not(.js) .win-progress span { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .js .hero .stage { --p: 1 !important; filter: none; transform: none; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   .js .reveal { opacity: 1; transform: none; filter: none; }

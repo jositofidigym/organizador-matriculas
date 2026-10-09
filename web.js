@@ -9,26 +9,37 @@
   navegar();
   window.addEventListener("scroll", navegar, { passive: true });
 
-  // La ventana de la portada se va enderezando al bajar.
+  // La ventana de la portada no se ve al entrar: al bajar pasa de borrosa a nítida, sube a su sitio y se
+  // endereza, al ritmo del scroll (si se vuelve arriba, se difumina otra vez).
   var escenario = document.querySelector(".hero .stage");
   var ventana = escenario && escenario.querySelector(".window");
-  if (ventana && !quieto) {
+  if (escenario && quieto) {
+    escenario.style.setProperty("--p", "1");
+  } else if (escenario) {
     var pendiente = false;
-    var enderezar = function () {
+    var colocar = function () {
       pendiente = false;
-      var r = escenario.getBoundingClientRect();
-      var avance = Math.min(Math.max((window.innerHeight - r.top) / (window.innerHeight * 0.9), 0), 1);
-      var maximo = window.innerWidth < 820 ? 8 : 14;
-      ventana.style.setProperty("--tilt", (maximo * (1 - avance)).toFixed(2) + "deg");
+      var arriba = escenario.getBoundingClientRect().top;
+      var alto = window.innerHeight;
+      // 0 cuando la ventana asoma por abajo; 1 (nítida) cuando su borde superior llega a media pantalla.
+      var p = Math.min(Math.max((alto - arriba) / (alto * 0.5), 0), 1);
+      escenario.style.setProperty("--p", p.toFixed(3));
+      if (p > 0.6) escenario.classList.add("play");
+      if (ventana) {
+        var maximo = window.innerWidth < 820 ? 8 : 14;
+        ventana.style.setProperty("--tilt", (maximo * (1 - p)).toFixed(2) + "deg");
+      }
     };
     window.addEventListener("scroll", function () {
-      if (!pendiente) { pendiente = true; requestAnimationFrame(enderezar); }
+      if (!pendiente) { pendiente = true; requestAnimationFrame(colocar); }
     }, { passive: true });
-    enderezar();
+    window.addEventListener("resize", colocar);
+    colocar();
   }
 
   // Aparecer al entrar en pantalla (y arrancar las maquetas animadas).
-  var mirar = document.querySelectorAll(".reveal, .play-on-view");
+  var mirar = Array.prototype.filter.call(document.querySelectorAll(".reveal, .play-on-view"),
+    function (el) { return el !== escenario; });     // la de la portada la lleva «colocar»
   // Lo que ya se ve al abrir la página entra enseguida, sin esperar al observador. Con un
   // temporizador y no con requestAnimationFrame: en una pestaña abierta en segundo plano el
   // navegador no pinta, y la portada se quedaría en blanco hasta mover la página.
