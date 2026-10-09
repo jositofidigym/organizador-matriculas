@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Abriendo el enlace · PeritoLab</title>
+<meta name="theme-color" content="#0c0b11">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236246EA'/%3E%3Cpath d='M11.5 23V9h5a4.6 4.6 0 0 1 0 9.2h-5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='21.8' cy='22.6' r='1.9' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+  html, body { margin: 0; height: 100%; background: #0c0b11; color: #a4a1b8; font: 16px/1.6 "Segoe UI", -apple-system, system-ui, sans-serif; }
+  main { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; text-align: center; }
+  .rueda { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #2a2740; border-top-color: #8f7bff; animation: girar .8s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  a { color: #c4b8ff; }
+  @media (prefers-reduced-motion: reduce) { .rueda { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="rueda" aria-hidden="true"></div>
+  <p id="texto">Abriendo el enlace…</p>
+</main>
+<script>
+  // Los enlaces de las campañas de PeritoLab pasan por aquí: ir.html#c:campaña.0. El servidor suma un clic a
+  // esa campaña (sin saber quién: todos reciben el mismo enlace) y dice a dónde lleva. Solo a direcciones que
+  // él conoce: esta página no sirve para redirigir a cualquier sitio.
+  (function () {
+    var SERVIDOR = "https://script.google.com/macros/s/AKfycbwk8DVIqnZSsnwD-isQgQ47Sm8-2EPF5_GBAOzU3WP5tvVi-AUBBugEx9DnXpnT9kc/exec";
+    var texto = document.getElementById("texto");
+    var fallo = function () {
+      texto.innerHTML = 'No se ha podido abrir el enlace. <a href="./">Ir a la web de PeritoLab</a>';
+      document.querySelector(".rueda").style.display = "none";
+    };
+    var m = /^([cr]:[\w.-]{1,80})\.(\d{1,4})$/.exec(decodeURIComponent(location.hash.slice(1)));
+    if (!m) { fallo(); return; }
+    var hecho = false;
+    var reloj = setTimeout(function () { if (!hecho) fallo(); }, 15000);
+    fetch(SERVIDOR + "?accion=clic&k=" + encodeURIComponent(m[1]) + "&n=" + m[2], {credentials: "omit"})
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        hecho = true;
+        clearTimeout(reloj);
+        if (d && d.ok && /^https?:\/\//.test(d.url)) location.replace(d.url); else fallo();
+      })
+      .catch(function () { hecho = true; clearTimeout(reloj); fallo(); });
+  })();
+</script>
+</body>
+</html>
