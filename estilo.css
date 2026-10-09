@@ -8,7 +8,7 @@
   --line-2: rgba(255, 255, 255, .14);
   --text: #f4f3f8;
   --muted: #a4a1b8;
-  --faint: #7d7a92;
+  --faint: #8a879f;
   --accent: #6246ea;
   --accent-2: #8f7bff;
   --accent-3: #c4b8ff;
@@ -320,7 +320,7 @@ section { position: relative; }
 .foot { border-top: 1px solid var(--line); padding: 64px 0 48px; font-size: 14px; color: var(--muted); }
 .foot-top { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
 .foot-cols { display: flex; gap: 72px; flex-wrap: wrap; }
-.foot-cols h4 { margin: 0 0 14px; font: 500 13px/1 var(--font); color: var(--text); }
+.foot-cols h2 { margin: 0 0 14px; font: 500 13px/1 var(--font); color: var(--text); letter-spacing: 0; }
 .foot-cols a { display: block; padding: 5px 0; transition: color .25s; }
 .foot-cols a:hover { color: var(--text); }
 .foot-legal { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--faint); }

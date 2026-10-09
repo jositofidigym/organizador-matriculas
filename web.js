@@ -81,15 +81,6 @@
     cifras.forEach(contar);
   }
 
-  // Foco de luz que sigue al ratón en las tarjetas.
-  document.querySelectorAll(".card").forEach(function (c) {
-    c.addEventListener("pointermove", function (ev) {
-      var r = c.getBoundingClientRect();
-      c.style.setProperty("--mx", (ev.clientX - r.left) + "px");
-      c.style.setProperty("--my", (ev.clientY - r.top) + "px");
-    });
-  });
-
   // Precios: mensual / anual.
   var selector = document.querySelector(".toggle");
   if (selector) {
@@ -185,14 +176,16 @@
       if (!a) return;
       ev.preventDefault();
       cerrarAviso();
-      var aqui = location.origin + location.pathname.replace(/[^/]*$/, "") + "matriculas.html";
+      var compresor = /PeritoLabCompresor/.test(a.getAttribute("href"));
+      var nombre = compresor ? "PeritoLab Compresor" : "PeritoLab Matrículas";
+      var aqui = location.origin + location.pathname.replace(/[^/]*$/, "") + (compresor ? "compresor.html" : "matriculas.html");
       aviso = document.createElement("div");
       aviso.className = "toast";
       aviso.setAttribute("role", "dialog");
       aviso.setAttribute("aria-label", "Descargar en el ordenador");
-      aviso.innerHTML = '<p><b>PeritoLab Matrículas es para Windows.</b> Ábrela en tu ordenador para descargarla.</p>' +
+      aviso.innerHTML = "<p><b>" + nombre + " es para Windows.</b> Abre esta página en tu ordenador para descargarlo.</p>" +
         '<div class="toast-actions"><a class="btn btn-primary btn-sm" href="mailto:?subject=' +
-        encodeURIComponent("PeritoLab Matrículas") + "&body=" + encodeURIComponent("Para descargarla en el ordenador: " + aqui) +
+        encodeURIComponent(nombre) + "&body=" + encodeURIComponent("Para descargarlo en el ordenador: " + aqui) +
         '">Enviármelo por correo</a><button type="button" class="btn btn-ghost btn-sm">Cerrar</button></div>';
       document.body.appendChild(aviso);
       aviso.querySelector("button").addEventListener("click", cerrarAviso);
