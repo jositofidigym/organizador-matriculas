@@ -33,7 +33,7 @@
       texto.innerHTML = 'No se ha podido abrir el enlace. <a href="./">Ir a la web de PeritoLab</a>';
       document.querySelector(".rueda").style.display = "none";
     };
-    var m = /^([cr]:[\w.-]{1,80})\.(\d{1,4})$/.exec(decodeURIComponent(location.hash.slice(1)));
+    var m = /^([crw]:[\w.-]{1,80})\.(\d{1,4})$/.exec(decodeURIComponent(location.hash.slice(1)));
     if (!m) { fallo(); return; }
     var hecho = false;
     var reloj = setTimeout(function () { if (!hecho) fallo(); }, 15000);

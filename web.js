@@ -203,6 +203,63 @@
     });
   }
 
+  // Cuántos descargan y cuántos pasan del Compresor a Matrículas: un número por botón en el servidor, SIN
+  // cookies ni saber quién (no se manda nada de la persona). Si falla, da igual: el enlace va igual.
+  var SERVIDOR = "https://script.google.com/macros/s/AKfycbwk8DVIqnZSsnwD-isQgQ47Sm8-2EPF5_GBAOzU3WP5tvVi-AUBBugEx9DnXpnT9kc/exec";
+  var contar = function (clave) {
+    try {
+      fetch(SERVIDOR + "?accion=clic&k=" + encodeURIComponent(clave) + "&n=0",
+            {mode: "no-cors", keepalive: true, credentials: "omit"}).catch(function () {});
+    } catch (e) { /* navegador antiguo: no se cuenta */ }
+  };
+  // En el ordenador: se cuenta la descarga y se explica el aviso azul de Windows (programa nuevo sin firma).
+  if (!movil) {
+    var ayuda = null;
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a[href]");
+      if (!a) return;
+      var href = a.getAttribute("href");
+      if (/-instalador\.exe$/.test(href)) {
+        var compresor = /PeritoLabCompresor/.test(href);
+        contar(compresor ? "w:descarga_compresor" : "w:descarga");
+        if (ayuda) ayuda.remove();
+        var nombre = compresor ? "PeritoLab Compresor" : "PeritoLab Matrículas";
+        ayuda = document.createElement("div");
+        ayuda.className = "toast toast-ayuda";
+        ayuda.setAttribute("role", "dialog");
+        ayuda.setAttribute("aria-label", "Cómo instalarlo");
+        ayuda.innerHTML = "<p><b>Se está descargando " + nombre + ".</b> Ábrelo al terminar. Si Windows dice " +
+          "«Windows protegió su PC», pulsa <b>Más información</b> y después <b>Ejecutar de todas formas</b>: " +
+          "sale con los programas nuevos que aún no tienen firma digital.</p>" +
+          '<div class="toast-actions"><button type="button" class="btn btn-ghost btn-sm">Entendido</button></div>';
+        document.body.appendChild(ayuda);
+        ayuda.querySelector("button").addEventListener("click", function () { ayuda.remove(); ayuda = null; });
+      } else if (/(^|\/)compresor\.html$/.test(location.pathname) && /^matriculas\.html/.test(href)) {
+        contar("w:compresor_web");
+      }
+    });
+  }
+
+  // Calculadora de Matrículas: fotos al día × días × 4 segundos por foto (como la aplicación).
+  var calc = document.getElementById("calc-fotos");
+  if (calc) {
+    var num = function (id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) && v > 0 ? v : 0; };
+    var coma = function (n, d) { return n.toLocaleString("es-ES", {minimumFractionDigits: d, maximumFractionDigits: d}); };
+    var pintar = function () {
+      var horas = num("calc-fotos") * num("calc-dias") * 4 / 3600;
+      var euros = horas * num("calc-hora");
+      document.getElementById("calc-horas").textContent = (horas < 10 ? coma(horas, 1) : coma(Math.round(horas), 0)) +
+        (Math.abs(horas - 1) < 0.05 ? " hora" : " horas");
+      document.getElementById("calc-euros").textContent = euros >= 1 ?
+        "Unos " + coma(Math.round(euros), 0) + " € de tu tiempo, frente a 19,95 € del plan Básico." :
+        "Pon cuántas fotos haces al día.";
+    };
+    ["calc-fotos", "calc-dias", "calc-hora"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", pintar);
+    });
+    pintar();
+  }
+
   var anio = document.querySelector("[data-year-now]");
   if (anio) anio.textContent = String(new Date().getFullYear());
 })();
