@@ -251,7 +251,7 @@
       document.getElementById("calc-horas").textContent = (horas < 10 ? coma(horas, 1) : coma(Math.round(horas), 0)) +
         (Math.abs(horas - 1) < 0.05 ? " hora" : " horas");
       document.getElementById("calc-euros").textContent = euros >= 1 ?
-        "Unos " + coma(Math.round(euros), 0) + " € de tu tiempo, frente a 19,95 € del plan Básico." :
+        "Unos " + coma(Math.round(euros), 0) + " € de tu tiempo, frente a 29,95 € del plan Básico." :
         "Pon cuántas fotos haces al día.";
     };
     ["calc-fotos", "calc-dias", "calc-hora"].forEach(function (id) {
