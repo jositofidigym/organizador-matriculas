@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://jositofidigym.github.io/organizador-matriculas/sitemap.xml
